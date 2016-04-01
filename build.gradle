@@ -1,0 +1,28 @@
+buildscript {
+  repositories { jcenter() }
+  dependencies {
+    classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+  }
+}
+
+apply plugin: 'java'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+jar.baseName = 'koara-ant-plugin'
+
+repositories {
+	mavenCentral()
+}
+
+shadowJar {
+  exclude 'org/'
+  exclude 'images/'
+  exclude 'META-INF/'
+}
+
+dependencies {
+	compile "org.apache.ant:ant:1.9.6"
+	compile "io.koara:koara:0.10"
+	compile "io.koara:koara-html:0.10"
+	testCompile "org.junit:junit:4.11"
+}
