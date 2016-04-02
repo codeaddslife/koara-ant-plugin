@@ -13,12 +13,25 @@ import io.koara.html.Html5Renderer;
 
 public class ParseTask extends Task {
 
-	private String outputDir;
+	private String srcdir;
+	private String destdir;
 
 	@Override
 	public void execute() throws BuildException {
-		String output = parseDocument("Hello World!");
-		writeFile(new File(outputDir, "x.htm"), output);
+		checkRequiredField("srcdir", srcdir);
+		checkRequiredField("destdir", destdir);
+		
+		File[] documents = new File(srcdir).listFiles(new FilenameExtensionFilter("kd"));
+		for(File document : documents) {
+			String output = parseDocument("Hello World!");
+			writeFile(new File(destdir, "x.htm"), output);
+		}
+	}
+	
+	private void checkRequiredField(String fieldName, String field) {
+		if(field == null) {
+			throw new BuildException("'" + fieldName + "' is a required field");
+		}
 	}
 	
 	private String parseDocument(String text) {
@@ -30,18 +43,22 @@ public class ParseTask extends Task {
 		return renderer.getOutput();
 	}
 
-	private void writeFile(File outputFile, String output) {
+	private void writeFile(File destdir, String output) {
 		try {
-			FileWriter fw = new FileWriter(outputFile);
+			FileWriter fw = new FileWriter(destdir);
 			fw.write(output);
 			fw.close();
 		} catch (IOException e) {
 			throw new BuildException("Cannot write file: ", e);
 		}
 	}
+	
+	public void setSrcdir(String srcdir) {
+		this.srcdir = srcdir;
+	}
 
-	public void setOutputDir(String outputDir) {
-		this.outputDir = outputDir;
+	public void setDestdir(String destdir) {
+		this.destdir = destdir;
 	}
 
 }
