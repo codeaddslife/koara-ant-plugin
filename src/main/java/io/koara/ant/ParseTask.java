@@ -23,8 +23,8 @@ public class ParseTask extends Task {
 		
 		File[] documents = new File(srcdir).listFiles(new FilenameExtensionFilter("kd"));
 		for(File document : documents) {
-			String output = parseDocument("Hello World!");
-			writeFile(new File(destdir, "x.htm"), output);
+			String output = parseDocument(document);
+			writeFile(new File(destdir, document.getName().substring(0, document.getName().length() - 3) + ".htm"), output);
 		}
 	}
 	
@@ -34,13 +34,17 @@ public class ParseTask extends Task {
 		}
 	}
 	
-	private String parseDocument(String text) {
-		Parser parser = new Parser();
-		Document document = parser.parse("Hello World!");
-
-		Html5Renderer renderer = new Html5Renderer();
-		document.accept(renderer);
-		return renderer.getOutput();
+	private String parseDocument(File file) {
+		try {
+			Parser parser = new Parser();
+			Document document = parser.parseFile(file);
+	
+			Html5Renderer renderer = new Html5Renderer();
+			document.accept(renderer);
+			return renderer.getOutput();
+		} catch(IOException e) {
+			throw new BuildException("'" + file.getName() + "' could not be parsed");
+		}
 	}
 
 	private void writeFile(File destdir, String output) {

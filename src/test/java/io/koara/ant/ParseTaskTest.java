@@ -30,7 +30,7 @@ public class ParseTaskTest {
 	public void execute() {
 		task.execute();
 		assertEquals(1, destDir.listFiles().length);
-		assertTrue(new File(destDir, "x.htm").exists());
+		assertTrue(new File(destDir, "test.htm").exists());
 	}
 	
 	@Test
