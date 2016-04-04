@@ -29,8 +29,19 @@ public class ParseTaskTest {
 	@Test
 	public void execute() {
 		task.execute();
-		assertEquals(1, destDir.listFiles().length);
+		assertEquals(3, destDir.listFiles().length);
+		assertTrue(new File(destDir + "/docs", "test.htm").exists());
 		assertTrue(new File(destDir, "test.htm").exists());
+		assertTrue(new File(destDir, "test2.htm").exists());
+		assertFalse(new File(destDir, "test3.htm").exists());
+	}
+	
+	@Test
+	public void executeAndRenderAsXml() {
+		task.setOutputFormat("xml");
+		task.execute();
+		assertTrue(new File(destDir, "test.xml").exists());
+		assertFalse(new File(destDir, "test.htm").exists());
 	}
 	
 	@Test
@@ -48,6 +59,5 @@ public class ParseTaskTest {
 		task.setDestdir(null);
 		task.execute();
 	}
-	
 	
 }
