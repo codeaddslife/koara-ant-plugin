@@ -1,9 +1,12 @@
 package io.koara.ant;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.nio.file.Files;
+import java.io.FileReader;
+import java.io.IOException;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -43,7 +46,7 @@ public class ParseTaskTest {
 		File[] files = destDir.listFiles();
 		assertEquals(1, files.length);
 		assertEquals("input.htm", files[0].getName());
-		assertEquals("<p>Hello World!</p>", getContent(files[0]));
+		assertEquals("<p>Hello World!</p>", readFileAsString(files[0]));
 	}
 	
 	@Test
@@ -54,7 +57,7 @@ public class ParseTaskTest {
 		File[] files = destDir.listFiles();
 		assertEquals(1, files.length);
 		assertEquals("input.xml", files[0].getName());
-		assertTrue(getContent(files[0]).startsWith("<?xml version"));
+		assertTrue(readFileAsString(files[0]).startsWith("<?xml version"));
 	}
 	
 	@Test
@@ -69,7 +72,7 @@ public class ParseTaskTest {
 	public void executeWithModulesSet() throws Exception {
 		task.setModules(" HEADINGS");
 		task.execute();
-		assertEquals("Hello World!", getContent(destDir.listFiles()[0]));
+		assertEquals("Hello World!", readFileAsString(destDir.listFiles()[0]));
 	}
 	
 	@Test
@@ -80,8 +83,17 @@ public class ParseTaskTest {
 		task.execute();
 	}
 	
-	private String getContent(File file) throws Exception {
-		return new String(Files.readAllBytes(file.toPath()), "UTF-8");
-	}
+	private String readFileAsString(File file) throws IOException {
+        StringBuffer fileData = new StringBuffer();
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        char[] buf = new char[1024];
+        int numRead=0;
+        while((numRead=reader.read(buf)) != -1){
+            String readData = String.valueOf(buf, 0, numRead);
+            fileData.append(readData);
+        }
+        reader.close();
+        return fileData.toString();
+    }
 	
 }

@@ -6,12 +6,42 @@ buildscript {
 }
 
 apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'signing'
 apply plugin: 'com.github.johnrengelman.shadow'
 
+group = "io.koara"
 jar.baseName = 'koara-ant-plugin'
 
 repositories {
 	mavenCentral()
+}
+
+compileJava {
+	sourceCompatibility = 1.6
+	targetCompatibility = 1.6
+}
+
+signing {
+	required = false
+	sign configurations.archives
+}
+
+task sourcesJar(type: Jar, dependsOn:classes) {
+	classifier = "sources"
+	from sourceSets.main.allJava.srcDirs
+}
+
+task javadocJar(type: Jar) {
+	classifier = "javadoc"
+	from javadoc
+}
+
+artifacts {
+	archives jar
+	archives javadocJar
+	archives sourcesJar
+	archives shadowJar
 }
 
 shadowJar {
@@ -26,4 +56,43 @@ dependencies {
 	compile "io.koara:koara-html:0.10"
 	compile "io.koara:koara-xml:0.10"
 	testCompile "junit:junit:4.12"
+}
+
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+				ext.sonatypeUsername = rootProject.hasProperty('sonatypeUsername') ? rootProject.sonatypeUsername : ''
+				ext.sonatypePassword = rootProject.hasProperty('sonatypePassword') ? rootProject.sonatypePassword : ''
+				authentication(userName: sonatypeUsername, password: sonatypePassword)
+			}
+
+			pom.project {
+				name 'koara'
+				packaging 'jar'
+				description 'Koara converter task for Ant'
+				url 'http://www.koara.io'
+
+				scm {
+					url 'https://github.com/codeaddslife/koara-ant-plugin'
+					connection 'https://github.com/codeaddslife/koara-ant-plugin'
+					developerConnection 'https://github.com/codeaddslife/koara-ant-plugin'
+				}
+				licenses {
+					license {
+						name 'The Apache Software License, Version 2.0'
+						url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+						distribution 'repo'
+					}
+				}
+				developers {
+					developer {
+						id 'codeaddslife'
+						name 'Andy Van Den Heuvel'
+					}
+				}
+			}
+		}
+	}
 }
