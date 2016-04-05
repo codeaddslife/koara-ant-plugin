@@ -3,8 +3,11 @@ package io.koara.ant;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.nio.file.Files;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.types.FileSet;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,50 +17,64 @@ import org.junit.rules.TemporaryFolder;
 public class ParseTaskTest {
 
 	private ParseTask task;
+	private File srcDir;
 	private File destDir;
 	@Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 	@Rule public ExpectedException ex = ExpectedException.none();
 	
 	@Before
 	public void setUp() throws Exception {
-		destDir = temporaryFolder.newFolder();
+		srcDir = new File("src/test/resources");
+		destDir = temporaryFolder.newFolder("output");
+		
 		task = new ParseTask();
-		task.setSrcdir("src/test/resources");
-		task.setDestdir(destDir.getAbsolutePath());
+		task.setTodir(destDir);
+		
+		FileSet fileset = new FileSet();
+		fileset.setDir(srcDir);
+		fileset.setProject(new Project());
+		task.add(fileset);
 	}
 	
 	@Test
-	public void execute() {
+	public void execute() throws Exception {
 		task.execute();
-		assertEquals(3, destDir.listFiles().length);
-		assertTrue(new File(destDir + "/docs", "test.htm").exists());
-		assertTrue(new File(destDir, "test.htm").exists());
-		assertTrue(new File(destDir, "test2.htm").exists());
-		assertFalse(new File(destDir, "test3.htm").exists());
+		
+		File[] files = destDir.listFiles();
+		assertEquals(1, files.length);
+		assertEquals("test.htm", files[0].getName());
+		assertEquals("<p>Hello World!</p>", getContent(files[0]));
 	}
 	
 	@Test
-	public void executeAndRenderAsXml() {
+	public void executeWithOutputFormatXml() throws Exception {
 		task.setOutputFormat("xml");
 		task.execute();
-		assertTrue(new File(destDir, "test.xml").exists());
-		assertFalse(new File(destDir, "test.htm").exists());
+		
+		File[] files = destDir.listFiles();
+		assertEquals(1, files.length);
+		assertEquals("test.xml", files[0].getName());
+		assertTrue(getContent(files[0]).startsWith("<?xml version"));
 	}
 	
 	@Test
-	public void noSrcDirDefined() {
+	public void executeWithOutputFormatUnknown() throws Exception {
 		ex.expect(BuildException.class);
-		ex.expectMessage("'srcdir' is a required field");
-		task.setSrcdir(null);
+		ex.expectMessage("Outputformat 'bla' is unknown. Possible values: html5, xml");
+		task.setOutputFormat("bla");
 		task.execute();
 	}
 	
 	@Test
-	public void noDestDirDefined() {
+	public void executeToDirNotSet() {
 		ex.expect(BuildException.class);
-		ex.expectMessage("'destdir' is a required field");
-		task.setDestdir(null);
+		ex.expectMessage("Todir must be set.");
+		task.setTodir(null);
 		task.execute();
+	}
+	
+	private String getContent(File file) throws Exception {
+		return new String(Files.readAllBytes(file.toPath()), "UTF-8");
 	}
 	
 }
