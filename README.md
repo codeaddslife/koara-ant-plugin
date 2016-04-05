@@ -13,11 +13,16 @@ This project is a plugin for parsing [Koara](http://www.koara.io) documents with
 
 ```xml
 <!-- Define the task -->
-<taskdef name="koara" classname="io.koara.ant.ParseTask" 
-    classpath="${basedir}/libs/koara-ant-plugin-0.1.0.jar" />
+<taskdef name="koara" classname="io.koara.ant.ParseTask" classpath="${basedir}/libs/koara-ant-plugin-all.jar" />
 
 <!-- Lint the code -->
 <target name="parseDocuments">  
-  <koara dir="${basedir}/src/kd" />
+    <koara todir="${basedir}/output" outputFormat="html5">
+        <fileset dir="${basedir}/input" />
+    </koara>
 </target>
 ```
+
+## Task attributes
+- *todir*: location to which all rendered documents should be written
+- *outputFormat*: the format in which the koara document should be rendered. Possible values: html5, xml

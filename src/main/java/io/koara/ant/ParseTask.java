@@ -20,6 +20,8 @@ public class ParseTask extends Task {
 
 	private File destDir;
 	private String outputFormat;
+	private String modules;
+	private String[] formattedModules = {"paragraphs", "headings", "lists", "links", "images", "formatting", "blockquote", "code"};
 	protected Vector<ResourceCollection> rcs = new Vector<ResourceCollection>();
 	
 	@Override
@@ -33,7 +35,9 @@ public class ParseTask extends Task {
 				 DirectoryScanner ds = fs.getDirectoryScanner();
 			     String[] files = ds.getIncludedFiles();
 			     for(String file : files) {
-			    	 parse(ds.getBasedir(), file);
+			    	 if(file.endsWith(".kd")) {
+			    		 parse(ds.getBasedir(), file);
+			    	 } 
 			     }
 			}
 		}
@@ -44,16 +48,18 @@ public class ParseTask extends Task {
 			log("Parse '" + new File(srcdir, file) + "'");
 			
 			Parser parser = new Parser();
+			parser.setModules(formattedModules);
 			Document document = parser.parseFile(new File(srcdir, file));
+			String name = file.substring(0, file.length() - 3);
 			
 			if(outputFormat == null || outputFormat.equalsIgnoreCase("html5")) {
 				Html5Renderer renderer = new Html5Renderer();
 				document.accept(renderer);
-				writeToFile(new File(destDir, "test.htm"), renderer.getOutput());
+				writeToFile(new File(destDir, name + ".htm"), renderer.getOutput());
 			} else if(outputFormat.equalsIgnoreCase("xml")) {
 				XmlRenderer renderer = new XmlRenderer();
 				document.accept(renderer);
-				writeToFile(new File(destDir, "test.xml"), renderer.getOutput());
+				writeToFile(new File(destDir, name + ".xml"), renderer.getOutput());
 			} else {
 				throw new BuildException("Outputformat '" + outputFormat + "' is unknown. Possible values: html5, xml");
 			}
@@ -62,9 +68,9 @@ public class ParseTask extends Task {
 		}
 	}
 	
-
 	private void writeToFile(File file, String content) {
 		try {
+			file.getParentFile().mkdirs();
 			FileWriter fw = new FileWriter(file);
 			fw.write(content);
 			fw.close();
@@ -77,6 +83,14 @@ public class ParseTask extends Task {
 		if (destDir == null) {
             throw new BuildException("Todir must be set.");
         }
+		
+		if(modules != null) {
+			String[] temp = modules.split(",");
+			for(int i=0; i < temp.length; i++) {
+				temp[i] = temp[i].trim().toLowerCase();
+			}
+			formattedModules = temp;
+		}
 	}
 	
 	public void add(final ResourceCollection res) {
@@ -89,6 +103,10 @@ public class ParseTask extends Task {
 	
 	public void setOutputFormat(String outputFormat) {
 		this.outputFormat = outputFormat;
+	}
+	
+	public void setModules(String modules) {
+		this.modules = modules;
 	}
 
 }

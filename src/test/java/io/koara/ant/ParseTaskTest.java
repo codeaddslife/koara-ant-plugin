@@ -42,7 +42,7 @@ public class ParseTaskTest {
 		
 		File[] files = destDir.listFiles();
 		assertEquals(1, files.length);
-		assertEquals("test.htm", files[0].getName());
+		assertEquals("input.htm", files[0].getName());
 		assertEquals("<p>Hello World!</p>", getContent(files[0]));
 	}
 	
@@ -53,7 +53,7 @@ public class ParseTaskTest {
 		
 		File[] files = destDir.listFiles();
 		assertEquals(1, files.length);
-		assertEquals("test.xml", files[0].getName());
+		assertEquals("input.xml", files[0].getName());
 		assertTrue(getContent(files[0]).startsWith("<?xml version"));
 	}
 	
@@ -63,6 +63,13 @@ public class ParseTaskTest {
 		ex.expectMessage("Outputformat 'bla' is unknown. Possible values: html5, xml");
 		task.setOutputFormat("bla");
 		task.execute();
+	}
+	
+	@Test
+	public void executeWithModulesSet() throws Exception {
+		task.setModules(" HEADINGS");
+		task.execute();
+		assertEquals("Hello World!", getContent(destDir.listFiles()[0]));
 	}
 	
 	@Test
