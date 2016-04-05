@@ -17,7 +17,7 @@ This project is a plugin for parsing [Koara](http://www.koara.io) documents with
 
 <!-- Lint the code -->
 <target name="parseDocuments">  
-    <koara todir="${basedir}/output" outputFormat="html5">
+    <koara todir="${basedir}/output" modules="paragraphs,headings,lists" outputFormat="html5" >
         <fileset dir="${basedir}/input" />
     </koara>
 </target>
@@ -25,4 +25,5 @@ This project is a plugin for parsing [Koara](http://www.koara.io) documents with
 
 ## Task attributes
 - *todir*: location to which all rendered documents should be written
-- *outputFormat*: the format in which the koara document should be rendered. Possible values: html5, xml
+- *modules*: Optional comma-seperated string of modules used to render the koara documents. By default, all modules will be used. Possible values: paragraphs, headings, lists, links, images, formatting, blockquote, code
+- *outputFormat*: the format in which the koara documents should be rendered. Possible values: html5, xml
