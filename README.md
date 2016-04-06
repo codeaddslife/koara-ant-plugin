@@ -25,11 +25,11 @@ This project is a plugin for parsing [Koara](http://www.koara.io) documents with
 ```
 
 ## Task attributes
-- **todir**: 
+- `todir`: 
   Location to which all rendered documents should be written
   
-- **modules**:
+- `modules`:
   Optional comma-seperated string of modules used to render the koara documents. By default, all modules will be used. Possible values: paragraphs, headings, lists, links, images, formatting, blockquote, code
 
-- **outputFormat**:
+- `outputFormat`:
   The format in which the koara documents should be rendered. Possible values: html5, xml
