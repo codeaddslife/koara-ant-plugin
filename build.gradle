@@ -68,6 +68,7 @@ dependencies {
 	compile "io.koara:koara-html:0.10"
 	compile "io.koara:koara-xml:0.10"
 	testCompile "junit:junit:4.12"
+	testCompile "org.slf4j:slf4j-nop:1.7.21"
 }
 
 uploadArchives {
