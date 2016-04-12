@@ -17,9 +17,9 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
-public class ParseTaskTest {
+public class ConvertTaskTest {
 
-	private ParseTask task;
+	private ConvertTask task;
 	private File srcDir;
 	private File destDir;
 	@Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -30,7 +30,7 @@ public class ParseTaskTest {
 		srcDir = new File("src/test/resources");
 		destDir = temporaryFolder.newFolder("output");
 		
-		task = new ParseTask();
+		task = new ConvertTask();
 		task.setTodir(destDir);
 		
 		FileSet fileset = new FileSet();

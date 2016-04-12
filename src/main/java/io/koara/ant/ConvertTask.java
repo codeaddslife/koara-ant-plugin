@@ -16,7 +16,7 @@ import io.koara.ast.Document;
 import io.koara.html.Html5Renderer;
 import io.koara.xml.XmlRenderer;
 
-public class ParseTask extends Task {
+public class ConvertTask extends Task {
 
 	private File destDir;
 	private String outputFormat;

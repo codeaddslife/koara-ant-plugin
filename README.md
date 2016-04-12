@@ -13,11 +13,11 @@ This project is a plugin for parsing [Koara](http://www.koara.io) documents with
 
 ```xml
 <!-- Define the task -->
-<taskdef name="koara" classname="io.koara.ant.ParseTask"
+<taskdef name="koara" classname="io.koara.ant.ConvertTask"
     classpath="${basedir}/libs/koara-ant-plugin-all.jar" />
 
 <!-- Lint the code -->
-<target name="parseDocuments">  
+<target name="convertDocuments">  
     <koara todir="${basedir}/output" modules="paragraphs,headings,lists" outputFormat="html5" >
         <fileset dir="${basedir}/input" />
     </koara>
