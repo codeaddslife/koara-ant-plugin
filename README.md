@@ -9,19 +9,24 @@
 This project is a plugin for parsing [Koara](http://www.koara.io) documents with [Apache Ant](http://ant.apache.org).
 
 ## Getting Started
-[Download](http://repo1.maven.org/maven2/io/koara/koara-ant-plugin/0.1.0/koara-html-0.1.0.jar) the koara-ant-plugin jar file and include the following code in your Ant build file.
+[Download](http://repo1.maven.org/maven2/io/koara/koara-ant-plugin/0.3.0/koara-html-0.3.0.jar) the koara-ant-plugin jar file and include the following code in your Ant build file.
 
 ```xml
-<!-- Define the task -->
-<taskdef name="koara" classname="io.koara.ant.ConvertTask"
-    classpath="${basedir}/libs/koara-ant-plugin-all.jar" />
+<project default="convert">
 
-<!-- Lint the code -->
-<target name="convertDocuments">  
-    <koara todir="${basedir}/output" modules="paragraphs,headings,lists" outputFormat="html5" >
-        <fileset dir="${basedir}/input" />
-    </koara>
-</target>
+	<get src="http://repo1.maven.org/maven2/io/koara/koara-ant-plugin/0.3.0/koara-ant-plugin-0.3.0-all.jar"
+	           dest="${basedir}/libs/koara-ant-plugin-all.jar" />
+	
+	<taskdef name="koara" classname="io.koara.ant.ConvertTask"
+	    classpath="${basedir}/libs/koara-ant-plugin-all.jar" />
+	
+	<target name="convert">  
+	    <koara todir="${basedir}/output" modules="paragraphs,headings,lists" outputFormat="html5" >
+	        <fileset dir="${basedir}/input" />
+	    </koara>
+	</target>
+
+</project>
 ```
 
 ## Task attributes
