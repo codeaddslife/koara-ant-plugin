@@ -1,38 +1,31 @@
 plugins {
-    id "net.saliman.cobertura" version "2.3.1"
-    id "com.github.kt3k.coveralls" version "2.6.3"
-    id "com.github.johnrengelman.shadow" version "1.2.3"
+    id 'net.saliman.cobertura' version '2.3.1'
+    id 'com.github.kt3k.coveralls' version '2.6.3'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
 }
 
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'signing'
 apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: "net.saliman.cobertura"
-apply plugin: "com.github.kt3k.coveralls"
+apply plugin: 'net.saliman.cobertura'
+apply plugin: 'com.github.kt3k.coveralls'
 
-group = "io.koara.ant"
+group = 'io.koara.ant'
 jar.baseName = 'koara-ant-plugin'
+version= '0.4.0'
+
+ext.koaraVersion = '0.10'
 
 repositories {
 	mavenCentral()
 }
 
-cobertura.coverageFormats = ["xml"]
+cobertura.coverageFormats = ['xml']
 
 compileJava {
 	sourceCompatibility = 1.6
 	targetCompatibility = 1.6
-}
-
-task release << {
-	def newVersion = System.console().readLine('> Release ' + project.version + '. New version: ')
-    println "Release ${project.version}..."
-	"git tag -a ${project.version} -m \"${project.version}\"".execute()
-    "gradle upload".execute()
-    ant.replace(file: "README.md", token: "${project.lastRelease}", value: "${project.version}")
-    ant.replace(file: "gradle.properties", token: "${project.version}", value: "${newVersion}")
-    ant.replace(file: "gradle.properties", token: "${project.lastRelease}", value: "${project.version}")
 }
 
 signing {
@@ -41,12 +34,12 @@ signing {
 }
 
 task sourcesJar(type: Jar, dependsOn:classes) {
-	classifier = "sources"
+	classifier = 'sources'
 	from sourceSets.main.allJava.srcDirs
 }
 
 task javadocJar(type: Jar) {
-	classifier = "javadoc"
+	classifier = 'javadoc'
 	from javadoc
 }
 
@@ -64,19 +57,19 @@ shadowJar {
 }
 
 dependencies {
-	compile "org.apache.ant:ant:1.9.6"
-	compile "io.koara:koara:0.12.0"
-	compile "io.koara:koara-html:0.12.0"
-	compile "io.koara:koara-xml:0.12.0"
-	testCompile "junit:junit:4.12"
-	testCompile "org.slf4j:slf4j-nop:1.7.21"
+	compile 'org.apache.ant:ant:1.9.6'
+	compile "io.koara:koara:${koaraVersion}"
+	compile "io.koara:koara-html:${koaraVersion}"
+	compile "io.koara:koara-xml:${koaraVersion}"
+	testCompile 'junit:junit:4.12'
+	testCompile 'org.slf4j:slf4j-nop:1.7.21'
 }
 
 uploadArchives {
 	repositories {
 		mavenDeployer {
 			beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-			repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+			repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
 				ext.sonatypeUsername = rootProject.hasProperty('sonatypeUsername') ? rootProject.sonatypeUsername : ''
 				ext.sonatypePassword = rootProject.hasProperty('sonatypePassword') ? rootProject.sonatypePassword : ''
 				authentication(userName: sonatypeUsername, password: sonatypePassword)
