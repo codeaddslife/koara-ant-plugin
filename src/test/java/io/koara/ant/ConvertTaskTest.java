@@ -57,7 +57,7 @@ public class ConvertTaskTest {
 		File[] files = destDir.listFiles();
 		assertEquals(1, files.length);
 		assertEquals("input.xml", files[0].getName());
-		assertTrue(readFileAsString(files[0]).startsWith("<?xml version"));
+		assertTrue(readFileAsString(files[0]).startsWith("<document"));
 	}
 	
 	@Test
