@@ -15,7 +15,7 @@ group = 'io.koara.ant'
 jar.baseName = 'koara-ant-plugin'
 version= '0.4.0'
 
-ext.koaraVersion = '0.12.0'
+ext.koaraVersion = '0.15.0'
 
 repositories {
 	mavenCentral()
@@ -58,9 +58,9 @@ shadowJar {
 
 dependencies {
 	compile 'org.apache.ant:ant:1.9.6'
-	compile "io.koara:koara:${koaraVersion}"
-	compile "io.koara:koara-html:${koaraVersion}"
-	compile "io.koara:koara-xml:${koaraVersion}"
+	compile "com.codeaddslife.koara:koara:${koaraVersion}"
+	compile "com.codeaddslife.koara:koara-html:${koaraVersion}"
+	compile "com.codeaddslife.koara:koara-xml:${koaraVersion}"
 	testCompile 'junit:junit:4.12'
 	testCompile 'org.slf4j:slf4j-nop:1.7.21'
 }
