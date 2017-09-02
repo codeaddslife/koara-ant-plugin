@@ -1,9 +1,9 @@
 language: java
-
 jdk:
   - openjdk7
   - oraclejdk7
   - oraclejdk8
-
 script:
   - gradle cobertura coveralls --info
+notifications:
+  email: false
